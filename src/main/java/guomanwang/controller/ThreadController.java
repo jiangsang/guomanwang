@@ -57,14 +57,14 @@ public class ThreadController {
 	//发帖模块
 	@ResponseBody
 	@RequestMapping("/pushthread")
-	public JSONObject addthread(int blockid,String title,String content,@RequestParam(value="status",defaultValue="0") int status,Model model,
+	public JSONObject addthread(int userid,int blockid,String title,String content,@RequestParam(value="status",defaultValue="0") int status,Model model,
 			HttpServletRequest request,HttpSession session) {
 		System.out.println("经过发帖模块");
 		System.out.println(status);
 		Thread thread=new Thread();
 		JSONObject json= new JSONObject();
 		Date time=new Date();
-		User user=(User) session.getAttribute("user");
+		User user=userService.getuserbyid(userid);
 		thread.setBlockId(blockid);
 		thread.setUserId(user.getUserid());
 		thread.setStatus(status);
@@ -75,7 +75,7 @@ public class ThreadController {
 		userinfo.setUserid(user.getUserid());
 		userinfo.setHonor(user.getHonor());
 		userinfo.setHeadurl(user.getHeadurl());
-		userinfo.setGradeValue((user.getGradeValue())+10);
+		userinfo.setGradeValue(user.getGradeValue()+10);
 		int change_row=this.threadService.addthread(thread);
 		if(change_row>0) {		
 			json.put("msg","帖子发送成功！增加10点经验值");

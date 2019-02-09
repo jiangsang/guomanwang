@@ -128,8 +128,10 @@ layui.use(['upload','layer','form'], function(){
 	  
 form.on('submit(push)', function(data){
 	//弹出loading
+	var userid=${user.getUserid()};
 	var index = top.layer.msg('数据提交中，请稍候',{icon: 16,time:false,shade:0.8});
     		$.post('<c:url value="/thread/pushthread"></c:url>',{
+    			userid:userid,
     			blockid:$("#blocks").val(),
     			title:$("#L_title").val(),
     			content:$("#L_content").val(),

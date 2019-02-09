@@ -89,7 +89,6 @@ public class UserController {
 		List<User> userlist=this.userService.isLogin(telnumber);
 		HttpSession session = request.getSession();
 		for(User user:userlist) {
-			System.out.println(user.getPassword());
 			if(user.getPassword().equals(password)) {
 				json.put("code",1);
 				json.put("msg","登录成功！");
@@ -395,7 +394,7 @@ public class UserController {
 	//点击确认更改，更新用户信息(头像）
 	@RequestMapping("/changeheadimage")
 	@ResponseBody
-	public JSONObject changeheadimage(Model model,HttpSession session) {
+	public JSONObject changeheadimage(Model model,HttpSession session,String headimage) {
 		User userinfo=(User)session.getAttribute("user");
 		System.out.println("经过changeheadimage");
 		JSONObject json= new JSONObject();
@@ -403,7 +402,7 @@ public class UserController {
 		user.setUserid(userinfo.getUserid());
 		user.setHonor(userinfo.getHonor());
 		user.setGradeValue(userinfo.getGradeValue());
-		user.setHeadurl((String) session.getAttribute("headimage"));
+		user.setHeadurl(headimage);
 		int change_row=this.userService.updateuserinfo(user);
 		if(change_row>0) {
 			List<User> userlist=this.userService.isLogin(userinfo.getPhone());
@@ -432,7 +431,6 @@ public class UserController {
 		src=src+name;
 		System.out.println(src);
 		if (!dir.exists()) {
-			session.setAttribute("headimage",src);
 			dir.mkdirs();
 			json.put("msg","上传成功");
 			json.put("code",0);
@@ -449,7 +447,7 @@ public class UserController {
 	@RequestMapping("/sign")
 	public JSONObject sign(int userid,HttpSession session,int signvalue) {
 		JSONObject json= new JSONObject();
-		User userinfo=(User)session.getAttribute("user");
+		User userinfo=userService.getuserbyid(userid);
 		User user=new User();
 		user.setUserid(userinfo.getUserid());
 		user.setHonor(userinfo.getHonor());
@@ -459,7 +457,6 @@ public class UserController {
 		Sign sign=new Sign();
 		sign.setUserid(userid);
 		sign.setSigndate(TimeTransformUtil.timetransform(date).substring(0, 10));
-		System.out.println(TimeTransformUtil.timetransform(date).substring(0, 10));
 		int rs=signservice.Sign(sign);
 		if(rs>0) {
 			json.put("code", 1);

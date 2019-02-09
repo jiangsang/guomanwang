@@ -127,12 +127,12 @@ public class CommitController {
 		commit.setUserId(userId);
 		Date time=new Date();
 		commit.setTime(time);
-		User user=(User)session.getAttribute("user");
+		User user=userService.getuserbyid(userId);
 		User userinfo=new User();
 		userinfo.setUserid(user.getUserid());
 		userinfo.setHonor(user.getHonor());
 		userinfo.setHeadurl(user.getHeadurl());
-		userinfo.setGradeValue((user.getGradeValue())+5);
+		userinfo.setGradeValue(user.getGradeValue()+5);
 		int rs = commitServiceimpl.insertCommit(commit);
 		if(rs>0) {
 			userService.updateuserinfo(userinfo);

@@ -158,11 +158,13 @@
 	                    <i class="iconfont icon-zan" id="${item.getId()}"></i>
 	                    <em id="emoo">${item.getZanNumber()}</em>
                     </span>
-                    <span id="reply">
-                    <i class="iconfont icon-svgmoban53"></i>
-                                                              回复<a class="replyname" style="display:none">${ item.getUserName()}</a>
-                       <a class="replyid" style="display:none">${ item.getId()}</a>
-                    </span>
+                    <c:if test="${item.getUserId()!=user.getUserid()}" >
+	                    <span id="reply">
+	                    <i class="iconfont icon-svgmoban53"></i>
+	                                                              回复<a class="replyname" style="display:none">${ item.getUserName()}</a>
+	                       <a class="replyid" style="display:none">${ item.getId()}</a>
+	                    </span>
+                    </c:if>
                     <c:if test="${user.getHonor()==2 || item.getUserId()==user.getUserid()}" >
 			            <div class="jieda-admin">            
 			                <!--  <span type="edit">编辑</span>-->
