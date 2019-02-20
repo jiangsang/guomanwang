@@ -52,6 +52,12 @@
 			"icon": "icon-vip",
 			"href": "../admin/userGrade",
 			"spread": false
+		},
+		{
+			"title": "管理员设置",
+			"icon": "&#xe613;",
+			"href": "../admin/adminList",
+			"spread": false
 		}
 	],
 	"systemeSttings": [

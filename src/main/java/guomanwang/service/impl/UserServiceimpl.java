@@ -72,4 +72,12 @@ public class UserServiceimpl implements UserService {
 	public int getusergradebyuserid(int userid) {
 		return this.userMapper.getusergradebyuserid(userid);
 	}
+	@Override
+	public List<User> getadminlist(Page page) {
+		return this.userMapper.getadminlist(page);
+	}
+	@Override
+	public List<User> searchadminbyname(String key) {
+		return this.userMapper.searchadminbyname(key);
+	}
 }

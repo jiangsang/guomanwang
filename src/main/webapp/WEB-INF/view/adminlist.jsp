@@ -5,7 +5,7 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>用户中心</title>
+	<title>管理员管理</title>
 	<meta name="renderer" content="webkit">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -26,20 +26,20 @@
 				<a class="layui-btn search_btn" data-type="reload">搜索</a>
 			</div>
 			<div class="layui-inline">
-				<a class="layui-btn layui-btn-normal addNews_btn">添加用户</a>
+				<a class="layui-btn layui-btn-normal addNews_btn">添加管理员</a>
 			</div>
 			<div class="layui-inline">
 				<a class="layui-btn layui-btn-danger layui-btn-normal layui-btn-disabled delAll_btn" disabled="disabled">批量删除</a>
 			</div>
 		</form>
 	</blockquote>
-	<table id="userList" lay-filter="userList"></table>
+	<table id="adminList" lay-filter="adminList"></table>
 
 	<!--操作-->
-	<script type="text/html" id="userListBar">
+	<script type="text/html" id="adminListBar">
 		<a class="layui-btn layui-btn-xs" lay-event="edit">设置</a>
 		<a class="layui-btn layui-btn-xs layui-btn-warm" lay-event="usable">已启用</a>
-		<a class="layui-btn layui-btn-xs layui-btn-danger layui-btn-disabled" lay-event="del" disabled="disabled">删除</a>
+		<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del" >删除</a>
 	</script>
 </form>
 <script type="text/javascript" src='<c:url value="/resources/layui/layui.js"></c:url>'></script>
@@ -54,11 +54,11 @@ layui.use(['form','layer','table','laytpl'],function(){
 
     //用户列表
     var tableIns = table.render({
-        elem: '#userList',
-        url : '../admin/getuserlist',
+        elem: '#adminList',
+        url : '../admin/getadminlist',
         cellMinWidth : 95,
         toolbar: true,
-        title: '注册用户数据表',
+        title: '注册管理员数据表',
         page : true,
         page: {
             curr: 1 //设定初始在第 1 页
@@ -69,28 +69,29 @@ layui.use(['form','layer','table','laytpl'],function(){
         id : "userListTable",
         cols : [[
             {type: "checkbox", fixed:"left", width:50},
+            {field: 'Id',sort: 'true', title: '编号', minWidth:100, align:"center"},
             {field: 'userName',sort: 'true', title: '用户名', minWidth:100, align:"center"},
-            {field: 'userPhone', title: '用户联系方式', minWidth:200, align:'center'},
+            {field: 'userPhone', title: '联系方式', minWidth:200, align:'center'},
             {field: 'userSex', title: '用户性别', align:'center'},
-            {field: 'userStatus', title: '用户状态',  align:'center',templet:function(d){
-                return d.userStatus ==0 ? "限制使用" : "正常使用";
+            {field: 'userStatus', title: '管理级别',  align:'center',templet:function(d){
+                return d.userStatus ==2 ? "管理员" : "超级管理员";
             }},
-            {field: 'gradeValue', title: '用户等级值', align:'center'},
-            {title: '操作', minWidth:175, templet:'#userListBar',fixed:"right",align:"center"}
+            {field: 'gradeValue', title: '等级经验值', align:'center'},
+            {title: '操作', minWidth:175, templet:'#adminListBar',fixed:"right",align:"center"}
         ]]
     });
     //搜索用户
     $(".search_btn").on("click",function(){
     	var index = top.layer.msg('数据查询中，请稍候',{icon: 16,time:false,shade:0.8});
         if($(".searchVal").val() != ''){
-            table.reload("userListTable",{
+            table.reload("adminListTable",{
                 page: {
                    curr: 1 //重新从第 1 页开始
                 },
                 where: {
                     key: $(".searchVal").val()  //搜索的关键字
                 },
-            url:'../admin/searchuser',
+            url:'<c:url value="/admin/searchuser"></c:url>',
         	method:'post',
             })
             setTimeout(function(){
@@ -100,10 +101,10 @@ layui.use(['form','layer','table','laytpl'],function(){
             layer.msg("请输入搜索的内容");
         }
     });
-    //用户设置
+    //管理员设置
     function addUser(edit){
         var index = layui.layer.open({
-            title : "用户设置",
+            title : "管理员设置",
             type : 2,
             content : '../admin/setUser',
             success : function(layero, index){
@@ -116,11 +117,12 @@ layui.use(['form','layer','table','laytpl'],function(){
                     if(edit.userStatus==3){
                     	body.find(".userStatus").prop("checked","checked");
                     }
+                    body.find("#blockmaster").css("display","none");
                         //用户状态
                     form.render();
                 }
                 setTimeout(function(){
-                    layui.layer.tips('点击此处返回用户列表', '.layui-layer-setwin .layui-layer-close', {
+                    layui.layer.tips('点击此处返回管理员列表', '.layui-layer-setwin .layui-layer-close', {
                         tips: 3
                     });
                 },500)
@@ -159,7 +161,7 @@ layui.use(['form','layer','table','laytpl'],function(){
     })
 	
     //列表操作
-    table.on('tool(userList)', function(obj){
+    table.on('tool(adminList)', function(obj){
         var layEvent = obj.event,
             data = obj.data;
 	
@@ -186,13 +188,13 @@ layui.use(['form','layer','table','laytpl'],function(){
                 layer.close(index);
             });
         }else if(layEvent === 'del'){ //删除
-            layer.confirm('确定删除此用户？',{icon:3, title:'提示信息'},function(index){
-                // $.get("删除用户接口",{
-                //     newsId : data.newsId  //将需要删除的用户Id作为参数传入
-                // },function(data){
+            layer.confirm('确定删除此管理员？'+data.Id,{icon:3, title:'提示信息'},function(index){
+                 $.post("/admin/deleteadmin",{
+                     newsId : data.newsId  //将需要删除的用户Id作为参数传入
+                 },function(data){
                     tableIns.reload();
                     layer.close(index);
-                // })
+                 })
             });
         }
     });

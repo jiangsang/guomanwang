@@ -87,6 +87,12 @@ public class AdminController {
 		System.out.println("经过userList");
 		return "userList";
 	}
+	//管理员设置主页
+	@RequestMapping("/adminList")
+	public String adminList(Model model) {
+		System.out.println("经过adminlist");
+		return "adminlist";
+	}
 	//添加资讯
 	@RequestMapping("/addnews")
 	public String addnews(Model model) {
@@ -118,9 +124,9 @@ public class AdminController {
 	//更新设置用户权限
 	@ResponseBody
 	@RequestMapping("/resetUser")
-	public JSONObject resetUser(Model model,String userPhone,int userGrade,int userStatus,int blockId) {
+	public JSONObject resetUser(Model model,String userPhone,int gradeValue,int userStatus,int blockId) {
 		System.out.println("经过resetUser");
-		System.out.println("电话："+userPhone+"等级："+userGrade+"状态、身份："+userStatus+"板块编号："+blockId);
+		System.out.println("电话："+userPhone+"等级值："+gradeValue+"状态、身份："+userStatus+"板块编号："+blockId);
 		List<User> userlist=this.userService.selectuserinfo(userPhone);
 		Block block=this.blockService.findblockbyid(blockId);
 		JSONObject jsonobject=new JSONObject();
@@ -132,7 +138,7 @@ public class AdminController {
 			threadnum=block.getThreadnum();
 			User userinfo=new User();
 			Block block1=new Block();
-			userinfo.setGrade(userGrade);
+			userinfo.setGradeValue(gradeValue);
 			userinfo.setHonor(userStatus);
 			userinfo.setUserid(userid);
 			int change_row1=this.userService.updateuserinfo(userinfo);
@@ -209,17 +215,44 @@ public class AdminController {
 			List<User> userlist=userService.getuserlist(page);
 			for(User user:userlist) {
 				JSONObject json= new JSONObject();
+				json.put("Id",user.getUserid());
 				json.put("userName",user.getUsername());
 				json.put("userPhone",user.getPhone());
 				json.put("userSex",user.getSex());
 				json.put("userStatus",user.getHonor());
-				json.put("userGrade",user.getGrade());
+				json.put("gradeValue",user.getGradeValue());
 				jsonArray.add(json);
 			}
 			JSONObject jsonobject= new JSONObject();
 			jsonobject.put("code",0);
 			jsonobject.put("msg","");
-			jsonobject.put("count", userService.getusernumber());
+			jsonobject.put("count", userlist.size());
+			jsonobject.put("data", jsonArray);
+			System.out.println(jsonobject);
+			return jsonobject;
+		}
+		//获得所有管理员信息
+		@ResponseBody
+		@RequestMapping("/getadminlist")
+		public JSONObject getadminlist(Model model,Page page,@RequestParam("limit") int limit) {
+			System.out.println("经过getadminlist");
+			JSONArray jsonArray = new JSONArray();
+			page.setRows(limit);
+			List<User> userlist=userService.getadminlist(page);
+			for(User user:userlist) {
+				JSONObject json= new JSONObject();
+				json.put("Id",user.getUserid());
+				json.put("userName",user.getUsername());
+				json.put("userPhone",user.getPhone());
+				json.put("userSex",user.getSex());
+				json.put("userStatus",user.getHonor());
+				json.put("gradeValue",user.getGradeValue());
+				jsonArray.add(json);
+				}
+			JSONObject jsonobject= new JSONObject();
+			jsonobject.put("code",0);
+			jsonobject.put("msg","");
+			jsonobject.put("count", userlist.size());
 			jsonobject.put("data", jsonArray);
 			System.out.println(jsonobject);
 			return jsonobject;

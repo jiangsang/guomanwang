@@ -20,35 +20,29 @@
 	<div class="layui-form-item layui-row layui-col-xs12">
 		<label class="layui-form-label">登录名</label>
 		<div class="layui-input-block">
-			<input type="text" class="layui-input userName" lay-verify="required" placeholder="只有用户本人才能修改" disabled>
+			<input type="text" class="layui-input userName" lay-verify="required" placeholder="输入你的登录名">
 		</div>
 	</div>
 	<div class="layui-form-item layui-row layui-col-xs12">
 		<label class="layui-form-label">手机号</label>
 		<div class="layui-input-block">
-			<input type="text" class="layui-input userPhone" lay-verify="userPhone"  disabled>
+			<input type="text" class="layui-input userPhone" lay-verify="userPhone">
 		</div>
 	</div>
 	<div class="layui-row">
 		<div class="magb15 layui-col-md4 layui-col-xs12">
 			<label class="layui-form-label">性别</label>
 			<div class="layui-input-block userSex">
-				<input type="radio" name="sex" value="男" title="男" disabled>
-				<input type="radio" name="sex" value="女" title="女" disabled>
-				<input type="radio" name="sex" value="保密" title="保密" disabled>
+				<input type="radio" name="sex" value="男" title="男" >
+				<input type="radio" name="sex" value="女" title="女" >
+				<input type="radio" name="sex" value="保密" title="保密">
 			</div>
 		</div>
 		<div class="magb15 layui-col-md4 layui-col-xs12">
-			<label class="layui-form-label">会员等级</label>
+			<label class="layui-form-label">等级经验值</label>
 			<div class="layui-input-block">
-				<select name="userGrade" class="userGrade" lay-filter="userGrade">
-					<option value="0">注册会员</option>
-					<option value="1">中级会员</option>
-					<option value="2">高级会员</option>
-					<option value="3">钻石会员</option>
-					<option value="4">超级会员</option>
-				</select>
-			</div>
+			<input type="text" class="layui-input gradeValue" lay-verify="gradeValue">
+		</div>
 		</div>
 		<!-- <div class="magb15 layui-col-md4 layui-col-xs12">
 			<label class="layui-form-label">用户状态</label>
@@ -60,7 +54,7 @@
 			</div>
 		</div> -->
 	</div>
-	<div class="layui-row">
+	<div class="layui-row" id="blockmaster">
 		<div class="magb15 layui-col-md4 layui-col-xs12">
 			<label class="layui-form-label">是否为版主</label>
 		    <div class="layui-input-block">
@@ -92,7 +86,7 @@ layui.use(['form','layer'],function(){
         layer = parent.layer === undefined ? layui.layer : top.layer,
         $ = layui.jquery;
     var userStatus="";
-	if($(".userStatus").val()!=""){
+	if($(".userStatus").val()!=""){ 
 	userStatus=3;
 	}
 	else {userStatus=1;}
@@ -102,7 +96,7 @@ layui.use(['form','layer'],function(){
 		var index = top.layer.msg('数据提交中，请稍候',{icon: 16,time:false,shade:0.8});
     		$.post('<c:url value="/admin/resetUser"></c:url>',{
                 userPhone : $(".userPhone").val(),  //手机号
-                userGrade : $(".userGrade").val(),  //用户等级
+                gradeValue : $(".gradeValue").val(),  //用户等级
                 userStatus : userStatus,   //用户权限状态
                 blockId :$(".chargeblock").val(),
     		},function(res){
